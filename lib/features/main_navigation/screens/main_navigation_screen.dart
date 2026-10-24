@@ -1,10 +1,13 @@
 import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
-import 'package:ecommerce_app_huma_volve/features/home/home_cubit/home_cubit.dart';
-import 'package:ecommerce_app_huma_volve/features/home/service/home_service.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/data_source/home_remote_data_source_imp.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/repository/home_repository_imp.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/use_cases/get_categories_use_case.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/use_cases/get_products_use_case.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/View_model/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme.dart';
-import '../../home/screens/home_screen.dart';
+import '../../home/presentation/view/home_screen.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 
@@ -18,13 +21,23 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   late final ApiClient apiClient;
-  late final HomeService homeService;
+  late final HomeRemoteDataSourceImp remoteDataSource;
+  late final HomeRepositoryImp repository;
+  late final GetCategoriesUseCase getCategoriesUseCase;
+  late final GetProductsUseCase getProductsUseCase;
   late final HomeCubit homeCubit;
+
   @override
   void initState() {
     apiClient = ApiClient();
-    homeService = HomeService(apiClient);
-    homeCubit = HomeCubit(homeService);
+    remoteDataSource = HomeRemoteDataSourceImp(apiClient);
+    repository = HomeRepositoryImp(remoteDataSource);
+    getCategoriesUseCase = GetCategoriesUseCase(repository);
+    getProductsUseCase = GetProductsUseCase(repository);
+    homeCubit = HomeCubit(
+      getCategoriesUseCase: getCategoriesUseCase,
+      getProductsUseCase: getProductsUseCase,
+    );
     super.initState();
   }
 
@@ -33,7 +46,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final List<Widget> screens = [
       BlocProvider(
         create: (BuildContext context) => homeCubit,
-        child: HomeScreen(),
+        child: const HomeScreen(),
       ),
       const CartScreen(),
       const ProfileScreen(),
