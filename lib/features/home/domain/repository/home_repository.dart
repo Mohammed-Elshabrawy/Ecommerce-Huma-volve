@@ -8,6 +8,8 @@ abstract class HomeRepository {
   Future<Either<Failure, List<HomeCategoryEntity>>>
   getCategories(); //Either ده او ده
   Future<Either<Failure, List<HomeProductEntity>>> getProducts(
-    int? categoryId,
-  ); // Add categoryId as a parameter
+    int? categoryId, {
+    required int limit,
+    required int offset,
+  }); // Add categoryId as a parameter
 }

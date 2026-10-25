@@ -33,6 +33,43 @@ class CartItemCard extends StatelessWidget {
               width: 90,
               height: 90,
               fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  width: 90,
+                  height: 90,
+                  color: Colors.grey.shade100,
+                  child: const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Image.network(
+                  'https://picsum.photos/seed/${cartItem.product.id}/200/200',
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 90,
+                      height: 90,
+                      color: Colors.grey.shade200,
+                      child: const Icon(
+                        Icons.image_not_supported_outlined,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(width: 16),
@@ -52,10 +89,7 @@ class CartItemCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   'Size: ${cartItem.selectedSize}',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -74,7 +108,10 @@ class CartItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppTheme.background,
                         borderRadius: BorderRadius.circular(12),

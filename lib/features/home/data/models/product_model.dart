@@ -20,6 +20,22 @@ class HomeProductModel extends HomeProductEntity {
 
   factory HomeProductModel.fromJson(dynamic json) {
     if (json is Map<String, dynamic>) {
+      List<String> parsedImages = [];
+      if (json['images'] != null && json['images'] is List) {
+        for (var item in json['images']) {
+          if (item is String) {
+            final cleaned = item
+                .replaceAll('[', '')
+                .replaceAll(']', '')
+                .replaceAll('"', '')
+                .replaceAll('\\', '')
+                .trim();
+            if (cleaned.startsWith('http')) {
+              parsedImages.add(cleaned);
+            }
+          }
+        }
+      }
       return HomeProductModel(
         id: json['id'] ?? 0,
         title: json['title'] ?? '',
@@ -29,7 +45,7 @@ class HomeProductModel extends HomeProductEntity {
         category: json['category'] != null
             ? HomeCategoryModel.fromJson(json['category'])
             : const HomeCategoryEntity(),
-        images: json['images'] != null ? List<String>.from(json['images']) : const [],
+        images: parsedImages,
         creationAt: json['creationAt'],
         updatedAt: json['updatedAt'],
       );

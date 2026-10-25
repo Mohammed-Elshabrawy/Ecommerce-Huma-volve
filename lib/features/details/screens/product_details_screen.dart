@@ -66,6 +66,40 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 child: Image.network(
                   widget.product.imageUrl,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      color: Colors.grey.shade100,
+                      child: const Center(
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.network(
+                      'https://picsum.photos/seed/${widget.product.id > 0 ? widget.product.id : 1}/600/600',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey.shade200,
+                          child: const Center(
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: Colors.grey,
+                              size: 48,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ),

@@ -24,16 +24,19 @@ class HomeProductEntity {
 
   String get imageUrl {
     if (images.isNotEmpty) {
-      final rawImg = images.first
-          .replaceAll('[', '')
-          .replaceAll(']', '')
-          .replaceAll('"', '')
-          .replaceAll('\\', '');
-      if (rawImg.startsWith('http')) {
-        return rawImg;
+      for (final raw in images) {
+        final cleaned = raw
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll('"', '')
+            .replaceAll('\\', '')
+            .trim();
+        if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+          return cleaned;
+        }
       }
     }
-    return 'https://picsum.photos/seed/$id/300/300';
+    return 'https://picsum.photos/seed/${id > 0 ? id : 1}/300/300';
   }
 
   List<Color> get colors => const [Colors.black, Colors.blue, Colors.grey];
